@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('tenants', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->enum('status',['pending','approved','rejected'])->default('pending');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('tenant_name');
             $table->string('subdomain')->unique();
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });
+        
     }
 
     /**
@@ -26,9 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tenants', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
-        });
+        Schema::dropIfExists('tenants');
     }
 };
