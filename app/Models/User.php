@@ -21,7 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'tenant_name',
+        'subdomain'
     ];
 
     /**
@@ -45,5 +47,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function tenant() {
+         return $this->hasOne(Tenant::class);
+    }
+
+    public function userpost() {
+        return $this->hasMany(Post::class);
     }
 }

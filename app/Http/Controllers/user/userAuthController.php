@@ -19,11 +19,11 @@ class userAuthController extends Controller
             'subdomain'    => 'required|string|max:50|unique:tenants,subdomain',
         ]);
       //Create Tenant Record
-        $tenant = Tenant::create([
+       /* $tenant = Tenant::create([
            'tenant_name' => $req->tenant_name,
            'subdomain' => $req->subdomain,
            'status'=>'pending'
-        ]);
+        ]);*/
        
       //Create User Record  
         $users = User::create([
@@ -31,7 +31,8 @@ class userAuthController extends Controller
            'email' => $req->email,
            'password' => bcrypt($req->password),
            'role' =>'user',
-           'tanant_id' => $req->id,
+           'tenant_name' => $req->tenant_name,
+           'subdomain' => $req->subdomain,
            'status'=>'pending'
         ]);
 
@@ -41,44 +42,43 @@ class userAuthController extends Controller
 
        //User Login Method
 
-       public function userLogin(Request $req) {
-        $loginData = $req->validate([
-            "email"=>"Required",
-            "password"=>"Required"
-         ]);
-         $sessiondata = $req->input();
- 
-         if(auth()->attempt([
-             "email"=>$loginData['email'],       
-             "password"=>$loginData['password']          
-         ])){
-             
-             $req->session()->Put('data',$sessiondata['email']);
-         }
-         $user = auth()->user();
+       public function userLogin(Request $req)
+       {
+           // Validate login inputs
+           $credentials = $req->validate([
+               'email' => 'required|email',
+               'password' => 'required'
+           ]);
        
-         if($user->role == "admin") {
-         
-             return redirect('/adminDash');
-            
-             
-         }
-            
-           
-             else if($user->role != "admin" && $user->status == 'approved'){
-             return redirect('/agent_dashboard');
-             }
-            
-             
-         
-         
-         else {
-            
-             return redirect('userDash'); 
-          
-         }
+           // Attempt login
+           if (auth()->attempt($credentials)) {
+               $user = auth()->user();
+       
+               // Save email to session 
+               $req->session()->put('data', $user->email);
+       
+               // Role-based redirection
+               if ($user->role === 'admin') {
+                   return redirect('/adminDash');
+               }
+       
+               if ($user->tenant && $user->tenant->status === 'approved') {
+                   return redirect('/userDash');
+               }
+       
+               // Tenant not approved
+               auth()->logout(); // Optional: log them out if not approved
+               return redirect('userlogin')->with('error', 'Your account is not yet approved.');
+           }
+       
+               // Invalid login
+                 return redirect()->back()->with('error', 'Invalid credentials.');
+       }
+       
 
-         return redirect()->back()->with('error', 'Invalid credentials.');
-     
+        public function logout() {
+            auth()->logout();
+            return redirect()->route('user.loginForm');
         }
+
 }

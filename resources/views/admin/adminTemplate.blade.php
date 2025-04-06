@@ -39,8 +39,14 @@
 
             <!-- Content -->
             <section class="content">
-                <h2>Dashboard Overview</h2>
-                <p>Manage blog posts, users, and settings.</p>
+                @yield('overview')
+                
+
+                 <!-- Create Post Form -->
+                 <section class="table-section">
+                  @yield('CreatePost')   
+                </section>
+
 
                 <!-- Blog Posts Table -->
                 <section class="table-section">
@@ -83,7 +89,8 @@
 
                 <!-- Users Table -->
                 <section class="table-section">
-                    <h3>Users</h3>
+                    @yield('users')
+                   <!-- <h3>Users</h3>
                     <table>
                         <thead>
                             <tr>
@@ -118,6 +125,7 @@
                             </tr>
                         </tbody>
                     </table>
+                              -->
                 </section>
             </section>
         </div>
