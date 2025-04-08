@@ -8,12 +8,22 @@ use Illuminate\Auth\Access\Response;
 
 class PostPolicy
 {
+
+    public function before(User $user, string $ability): bool|null
+    {
+        if ($user->role === 'admin') {
+            return true; // Admins can do everything
+        }
+
+        return null; // Continue to check other methods
+    }
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +31,7 @@ class PostPolicy
      */
     public function view(User $user, Post $post): bool
     {
-        return false;
+          return auth()->id() === $post->user_id;
     }
 
     /**
@@ -29,7 +39,7 @@ class PostPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->status === 'approved';
     }
 
     /**
@@ -37,7 +47,7 @@ class PostPolicy
      */
     public function update(User $user, Post $post): bool
     {
-        return false;
+        return auth()->id() === $post->user_id;
     }
 
     /**
@@ -45,7 +55,7 @@ class PostPolicy
      */
     public function delete(User $user, Post $post): bool
     {
-        return false;
+        return auth()->id() === $post->user_id;;
     }
 
     /**
