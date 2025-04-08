@@ -25,6 +25,8 @@ Route::middleware(['auth', 'role:admin'])
 ->group(function () {
     Route::get('adminDash', 'adminDash')->name('admin.dashboard');
     Route::get('update/{id}', 'updateUser')->name('user.update');
+    Route::get("delete/{user}","delete")->name('user.delete');
+    Route::get("block/{id}","block")->name('user.block');
 });
 
 Route::middleware(['auth','post'])
@@ -32,6 +34,9 @@ Route::middleware(['auth','post'])
 ->group(function() {
   Route::get("userDash","index")->name('user.dash');
   Route::Post('create_post','create')->name('create.post');
+  Route::get("edit/{post}",'edit')->name('post.edit');
+  Route::Post("update","update")->name("post.update");
+  Route::get("delete/{post}","delete")->name("post.delete");
 });
 
 

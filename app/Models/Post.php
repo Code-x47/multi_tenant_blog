@@ -9,4 +9,10 @@ class Post extends Model
     public function tenant() {
         return $this->BelongsTo(Tenant::class);
     }
+
+/*static::addGlobalScope('tenant', function ($query) {
+        if (auth()->check() && auth()->user()->tenant_id) {
+            $query->where('tenant_id', auth()->user()->tenant_id);
+        }
+    });*/
 }
