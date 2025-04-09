@@ -5,7 +5,7 @@ A Laravel-based multi-tenant blog system with admin approval flow, Web/API post 
 ---
 
 ## IMPORTANT
-DB can Be Copied and Imported from a File Named multi_tenant_blog.sql on The App Folder.
+DB can Be Copied and Imported from a File Named multi_tenant_blog.sql on The Root  Folder.
 
 # Concept
 
