@@ -1,4 +1,11 @@
+
 @extends('admin.adminTemplate');
+
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 
 <!-- Sidebar -->
 @section('adminSideBar')
@@ -8,8 +15,8 @@
             </div>
             <ul class="sidebar-menu">
          <li><a href="#">Dashboard</a></li>
-                <li><a href="#">Manage Posts</a></li>
-                <li><a href="#">Manage Users</a></li>
+                <li><a href="" @click.prevent="togglePostMethod">Manage Posts</a></li>
+                <li><a href="#" @click.prevent="toggleUsersMethod">Manage Users</a></li>
                 <li><a href="#">Settings</a></li>
                 <li><a href="{{route('users.logout')}}">Logout</a></li>
             </ul>
@@ -30,7 +37,6 @@
 </header>
 @endsection
 
-
 @section('overview')
 <h2>Dashboard Overview</h2>
 <p>Manage blog posts, users, and settings. etc...</p>-
@@ -38,7 +44,8 @@
 @endsection
 
  <!-- Blog Posts Table -->
- @section('myposts')
+     
+ @section('myposts') 
 <h3>Blog Posts</h3>
       <table>
           <thead>
@@ -65,7 +72,9 @@
     </tbody>
                     
   </table>
+  
 @endsection
+
 
 
 
@@ -94,7 +103,7 @@
                                 <td>{{$user['status']}}</td>
                                 <td>
                                  <a href="{{route('user.update',$user->id)}}">Update</a> |
-                                 <a href="{{route('user.block',$user->id)}}">De/Activate</a> |
+                                 <a href="{{route('user.toggleStatus',$user->id)}}">De/Activate</a> |
                                  <a href="{{route('user.delete',$user->id)}}" style="color: red" onclick="return confirm('Are you sure you want to delete this post?');">Delete</a></td>
                             </tr>
                             @endforeach

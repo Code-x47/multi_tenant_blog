@@ -13,10 +13,12 @@ class Tenant extends Model
         'subdomain'
     ];
 
+    //Tenant And Post Relationship
     public function post() {
         return $this->hasMany(Post::class);
     }
 
+    //Tenant And Users Relationship
     public function user()
     {
     return $this->belongsTo(User::class, 'user_id');

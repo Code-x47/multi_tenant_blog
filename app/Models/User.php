@@ -50,10 +50,11 @@ class User extends Authenticatable
         ];
     }
 
+    //User And Tenant Relationship
     public function tenant() {
          return $this->hasOne(Tenant::class);
     }
-
+    //User And Post Relationship
     public function userpost() {
         return $this->hasMany(Post::class);
     }

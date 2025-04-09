@@ -1,5 +1,10 @@
-@extends('admin.adminTemplate');
+@extends('admin.adminTemplate')
 
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 
 
 
@@ -12,7 +17,7 @@
             </div>
             <ul class="sidebar-menu">
           <li><a href="#">Dashboard</a></li>
-          <li><a href="#">Manage Posts</a></li>
+          <li><a href="#" @click.prevent="togglePostMethod">Manage Posts</a></li>
           <li><a href="#">Add New Post</a></li>
           <li><a href="#">Comments</a></li>
           <li><a href="#">Settings</a></li>
@@ -74,7 +79,7 @@
                <td>{{$posts->tenant->tenant_name}}</td>
                <td>{{$posts->content}}</td>
               <td><a href="{{route('post.edit',$posts['id'])}}">Edit</a> |
-               <a style="color: red" href="{{route('post.delete',$posts['id'])}}" onclick="return confirm('Are you sure you want to delete this post?');">Delete</a>
+               <a style="color: red" href="{{route('post.delete',$posts->id)}}" onclick="return confirm('Are you sure you want to delete this post?');">Delete</a>
               </td>
           </tr>
       @endforeach                     

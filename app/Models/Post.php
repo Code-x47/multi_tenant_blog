@@ -6,13 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
+    //Tenant Relationship
     public function tenant() {
         return $this->BelongsTo(Tenant::class);
     }
 
-/*static::addGlobalScope('tenant', function ($query) {
-        if (auth()->check() && auth()->user()->tenant_id) {
-            $query->where('tenant_id', auth()->user()->tenant_id);
-        }
-    });*/
+
 }

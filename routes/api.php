@@ -9,14 +9,22 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+ //Public Route
 Route::Post('login',[apiController::class,"login"]);
+Route::Post('apiRegister',[apiController::class,"Register"]);
 
-Route::Post('/logout', [apiController::class, 'logout'])->middleware('auth:sanctum');
-Route::get("/show/{post}",[apiController::class, 'show'])->middleware('auth:sanctum');
-Route::get("/showAll",[apiController::class, 'showAll'])->middleware('auth:sanctum');
-Route::Post('create',[apiController::class, 'create'])->middleware('auth:sanctum');
-Route::PUT('update/{id}',[apiController::class, 'update'])->middleware('auth:sanctum');
-Route::Delete("delete/{id}",[apiController::class, 'delete'])->middleware('auth:sanctum');
+//Protected Routes For Blog Posts
+Route::middleware(['auth:sanctum'])
+->controller(apiController::class)
+->group(function() {
+   Route::Post('/logout', 'logout')->name('post.logout');
+   Route::get("/show/{post}",'show')->name('post.show');
+   Route::get("/showAll", 'showAll')->name('post.showAll');
+   Route::Post('create','create')->name('post.create');
+   Route::PUT('update/{id}','update')->name('post.update');
+   Route::Delete("delete/{id}",'delete')->name('post.delete');
+});
+
 
 
 

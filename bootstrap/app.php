@@ -14,12 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'role' => \App\Http\Middleware\adminRoleMiddleware::class,
-        ]);
+        ]); // Middleware That Guides The Admin Route.
     })
     ->withMiddleware(function (Middleware $middleware) {
       $middleware->alias([
             'post' => \App\Http\Middleware\PostAccessMiddleware::class,
-        ]);
+        ]); //Middleware That Guides The Post Routes.
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

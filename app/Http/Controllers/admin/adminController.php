@@ -7,26 +7,30 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Tenant;
+use App\Events\TenantApprovalEvent;
 
 
 class adminController extends Controller
 {
-    //To Fetch All The Users:
+    
+//To Method Links Directly To The Admin Dashboard
     public function adminDash() {
-        $users = User::all();
-        $post =  Post::all(); 
+
+       $users = User::latest()->take(10)->get(); 
+       $post = Post::latest()->take(10)->get(); 
+
         return view("admin.adminDash_template",compact('users','post'));
     }
 
-
+//This Method will Create Tenancy for a User And Will Also Change The Users Status TO "Approved"    
     public function updateUser($id) {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $userTenant = Tenant::where('user_id',$id)->first();
-        if($userTenant){
-            return [
-              "Message"=>"Record Already Exsist",
-              ];
-           }
+
+        if ($userTenant) {
+         return back()->with('error', 'Record Already Exists');
+        }
+    
 
         $user->status = "approved";
        
@@ -40,48 +44,42 @@ class adminController extends Controller
         $tenant->user_id = $user->id;
         $tenant->status = "approved";
 
+        if ($tenant->save()) {
+            event(new TenantApprovalEvent($user));
+        }
 
-        $tenant->save();
-
-        
-
-        return redirect()->back();
+        return redirect()->back()->with('success', 'User approved and tenant created.');
        
     }
 
+// This Method Will Delete The A User 
     public function delete(User $user) {
         $user->delete();
-        return redirect()->route('admin.dashboard');
+        return redirect()->route('admin.dashboard')->with('success', 'User deleted successfully.');;
     }
 
-    public function block($id) {
-        $user = User::find($id);
-        if($user->status == "pending"){
-         $user->status = "approved";
-        }
-        else {
-         $user->status = "pending";
-         
-        }
-        $user->save();
-        
+// This Method is responsible for Suspending A users account and still activate the Account You Can Toggle Through to achieve This
+  
+    public function toggleStatus($id)
+    {
+        $user = User::findOrFail($id);
 
-        $tenant = Tenant::where("user_id",$id)->first();
+      // Toggle user status
+        $user->status = $user->status === 'pending' ? 'approved' : 'pending';
+        $user->save();
+
+     // Toggle tenant status if exists
+       $tenant = Tenant::where('user_id', $id)->first();
+
+     if ($tenant) {
         $tenant->tenant_name = $user->tenant_name;
         $tenant->subdomain = $user->subdomain;
-        $tenant->user_id = $user->id;
-        if($tenant->status == "pending"){
-        $tenant->status = "approved";     
-        }
-        else{
-        $tenant->status = "pending";
-        
-        }
+        $tenant->status = $tenant->status === 'pending' ? 'approved' : 'pending';
         $tenant->save();
-        
+     }
 
-        
-
-        return redirect()->back();
+     return redirect()->back()->with('success', 'User and tenant status updated.');
+    
     }
+
 }

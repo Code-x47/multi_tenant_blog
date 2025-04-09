@@ -9,15 +9,53 @@ use App\Models\User;
 use App\Models\Post;
 use App\Models\Tenant;
 use App\Policies\PostPolicy;
+use App\Events\userRegisteredEvent;
+
 class apiController extends Controller
 {
-    public function login(Request $request)
+
+//This Method is Responsible For LOGIN 
+ public function Register(Request $req) {
+  //Validate Input Fields
+     $data = $req->validate([
+       'name'=>'required|string|max:255',
+       'email'=>'required|email|unique:users,email',
+       'password'=>'required|confirmed|min:6',
+       'tenant_name'=>'required|string|max:255',
+       'subdomain'=>'required|string|max:50|unique:tenants,subdomain',
+            ]);
+       
+           
+    //Create User Record  
+      $users = User::create([
+        'name' => $req->name,
+        'email' => $req->email,
+        'password' => bcrypt($req->password),
+        'tenant_name' => $req->tenant_name,
+        'subdomain' => $req->subdomain,
+            ]);
+    
+      if($users) {
+        event(new userRegisteredEvent($users)); //Event Thta Notifies Both Users And Admin Of A users Registration
+
+        return response([
+            'Message' => 'Registration successful. Awaiting admin approval.'
+        ]);
+        }
+            
+        
+    
+    }
+
+//This Method is Responsible For LOGIN   
+   public function login(Request $req)
     {
-        $details = $request->validate([
+        //Validate Request
+        $details = $req->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
-
+         //If User is Not Validated
         if (!Auth::attempt($details)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
@@ -30,7 +68,7 @@ class apiController extends Controller
         }
     
 
-       
+        //Create A Token After being Authenticated
         $token = $user->createToken('API Token')->plainTextToken;
 
         return response()->json([
@@ -40,27 +78,29 @@ class apiController extends Controller
         ]);
     }
 
-
-    public function logout(Request $request)
+// LOGOUT Logic
+    public function logout(Request $req)
     {
-    $request->user()->currentAccessToken()->delete();
+    $req->user()->currentAccessToken()->delete();
     return response()->json(['message' => 'Logged out']);
     }
-
+//This method fetches a single post That Specifically Belongs To The Logged In User
     public function show(Post $post){
     $this->authorize("view",$post);
     return $post;
     }
     
-    //This Method Will Show Posts That Specifically Belongs To The Logged In User
-    public function showAll() {
+//This Method Will Show Posts That Specifically Belongs To The Logged In User
+    public function showAll() 
+    {
     $this->authorize("viewAny",Post::class);
      return Post::where('user_id',auth()->id())->get();
     }
 
 
-
-    public function create(Request $req) {
+//This Method Will Create Posts That Specifically Belongs To The Logged In User
+    public function create(Request $req) 
+    {
         $this->authorize('create', Post::class);
         
         $req->validate([
@@ -78,7 +118,7 @@ class apiController extends Controller
 
     }
 
-
+//This Method Will Update Posts That Specifically Belongs To The Logged In User And this Post can be fetched by the Post's $id
     public function update(Request $req, $id) {
        
         $update = Post::find($id);
@@ -93,8 +133,8 @@ class apiController extends Controller
         return $update->save();
 
     }
-
-    public function delete($id) {
+//This Method Will Delete Posts That Specifically Belongs To The Logged In User And this Post can be fetched by the Post's $id
+   public function delete($id) {
        $delete = Post::findOrFail($id);
        $this->authorize('delete',$delete);
        $delete->delete();

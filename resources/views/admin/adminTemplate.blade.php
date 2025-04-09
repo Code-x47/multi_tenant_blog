@@ -5,31 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="{{'assets/css/adminDash.css'}}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3.0.2"></script>
 </head>
 <body>
+<div id="app">
     <div class="dashboard-container">
         <!-- Sidebar -->
+        
         @yield('userSideBar')
         @yield('adminSideBar')
        
 
         <!-- Main Content -->
+     
         <div class="main-content">
             <!-- Topbar -->
             
             @yield('topbar')
-            <!--<header class="topbar">
-                <div class="topbar-left">
-                    <h1>Dashboard</h1>
-                </div>
-                <div class="topbar-right">
-                    <span>Welcome, Admin</span>
-                    <img src="user-avatar.jpg" alt="User Avatar" class="user-avatar">
-                </div>
-            </header>-->
+           
 
             <!-- Content -->
+
+        
             <section class="content">
+             
                 @yield('overview')
                 
 
@@ -40,17 +40,21 @@
 
 
                 <!-- Blog Posts Table -->
-                <section class="table-section">
+                <section class="table-section" v-if="togglepost">
                     @yield('myposts')
                 </section>
 
                 <!-- Users Table -->
-                <section class="table-section">
-                    @yield('users')
-                  
-                </section>
+                <section class="table-section" v-if="toggleusers">
+                  @yield('users')
+               </section>
+
             </section>
-        </div>
+       </div>
+     </div>  
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{'assets/js/app.js'}}"></script>
 </body>
 </html>
