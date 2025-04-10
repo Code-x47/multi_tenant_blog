@@ -5,14 +5,14 @@ use App\Http\Controllers\user\userAuthController;
 use App\Http\Controllers\admin\adminController;
 use App\Http\Controllers\PostController;
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-});
+});*/
 
 //This Route Is Responsile For Users Login And Registration For Every user including Admins
 Route::controller(userAuthController::class)->group(function() {
 Route::view("userReg","users.userReg")->name('user.regForm');
-Route::view("userlogin","users.userlogin")->name('user.loginForm');
+Route::view("/","users.userlogin")->name('user.loginForm');
 Route::get('/logout','logout')->name('users.logout');
 Route::Post('login','userLogin')->name('users.login');
 Route::Post("userReg","userRegister")->name('user.reg');
