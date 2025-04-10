@@ -51,7 +51,7 @@ Login: admin@gmail.com Password: password
 ### 1. Clone the Repository
 
 ```bash
-## git clone https://github.com/your-username/your-project.git
+## git clone https://github.com/Code-x47/multi_tenant_blog.git
 cd your-project
 
 ## Environment Setup:
@@ -95,13 +95,30 @@ RESPONSE:
 ### Posts (Tenant Only)
 ## Get All Posts That Belongs To The Logged In Tenant:
 
-GET /api/showAll
 
+
+
+
+
+
+
+GET /api/showAll
+Headers:
+{
+  "Content-Type": "application/json",
+  "Auth Required": "Yes",
+  "Bearer_Token": "YOUR_ACCESS_TOKEN"
+}
 
 ## Search For A specific Post That Belongs To The Logged In Tenant:
 
 GET /api/show/{post}
-
+Headers:
+{
+  "Content-Type": "application/json",
+  "Auth Required": "Yes",
+  "Bearer_Token": "YOUR_ACCESS_TOKEN"
+}
 ## Create Post
 POST /api/create
 
@@ -110,30 +127,77 @@ BODY
   "title": "My Post",
   "content": "Post body"
 }
+Headers:
+{
+  "Content-Type": "application/json",
+  "Auth Required": "Yes",
+  "Bearer_Token": "YOUR_ACCESS_TOKEN"
+}
 
 ## UPDATE POST
 PUT /api/update/{id}
-
+Headers:
+{
+  "Content-Type": "application/json",
+  "Auth Required": "Yes",
+  "Bearer_Token": "YOUR_ACCESS_TOKEN"
+}
 
 ### DELETE POST
 DELETE /api/delete/{id}
+Headers:
+{
+  "Content-Type": "application/json",
+  "Auth Required": "Yes",
+  "Bearer_Token": "YOUR_ACCESS_TOKEN"
+}
 
+### LOGOUT
+POST /api/logout
+Headers:
+{
+  "Auth Required": "Yes",
+  "Bearer_Token": "YOUR_ACCESS_TOKEN"
+}
 
 ### Posts (Admins Only)
 
 ## Get All The Posts That Belongs To Every Tenant:
 
 GET /api/showAll
-
+Headers:
+{
+  "Content-Type": "application/json",
+  "Auth Required": "Yes",
+  "Bearer_Token": "YOUR_ACCESS_TOKEN"
+}
 
 ## Search For A specific Post:
 
 GET /api/show/{post}
-
+Headers:
+{
+  "Content-Type": "application/json",
+  "Auth Required": "Yes",
+  "Bearer_Token": "YOUR_ACCESS_TOKEN"
+}
 
 ### ADMIN CAN DELETE POST DELETE POST
 DELETE /api/delete/{id}
+Headers:
+{
+  "Content-Type": "application/json",
+  "Auth Required": "Yes",
+  "Bearer_Token": "YOUR_ACCESS_TOKEN"
+}
 
+### LOGOUT
+POST /api/logout
+Headers:
+{
+  "Auth Required": "Yes",
+  "Bearer_Token": "YOUR_ACCESS_TOKEN"
+}
 
 
 
