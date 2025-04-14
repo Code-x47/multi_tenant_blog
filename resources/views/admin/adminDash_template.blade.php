@@ -100,7 +100,11 @@
                                 <td>{{$user['id']}}</td>
                                 <td>{{$user['name']}}</td>
                                 <td>{{$user['email']}}</td>
-                                <td>{{$user['status']}}</td>
+                                @if($user->status === "pending")
+                                <td style="color:red">{{$user['status']}}</td>
+                                @else
+                                <td style="color:green">{{$user['status']}}</td>
+                                @endif
                                 <td>
                                  <a href="{{route('user.update',$user->id)}}">Update</a> |
                                  <a href="{{route('user.toggleStatus',$user->id)}}">De/Activate</a> |
